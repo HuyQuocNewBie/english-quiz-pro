@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lottie/lottie.dart';
 
-class LoadingWidget {
-  // Full screen loading (dùng khi đổi màn hình, đăng nhập, v.v.)
-  static Widget fullScreen() {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SpinKitFadingCircle(
-              color: Color(0xFF2E8B57),
-              size: 60,
-            ),
-            SizedBox(height: 24),
-            Text(
-              'Đang tải...',
-              style: TextStyle(fontSize: 18, color: Color(0xFF2E8B57)),
-            ),
-          ],
-        ),
-      ),
+/// Loading toàn cục – dùng cho mọi nơi trong app
+class LoadingWidget extends StatelessWidget {
+  final bool useLottie; // true = Lottie, false = SpinKit
+  final double size;
+
+  const LoadingWidget({
+    super.key,
+    this.useLottie = false,
+    this.size = 80,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (useLottie) {
+      return Lottie.asset(
+        'assets/lottie/loading.json',
+        width: size + 40,
+        height: size + 40,
+        fit: BoxFit.contain,
+      );
+    }
+
+    return SpinKitFadingCircle(
+      color: Theme.of(context).primaryColor,
+      size: size,
     );
   }
+}
 
-  // Inline loading nhỏ (dùng trong button, list, v.v.)
-  static Widget inline({Color color = const Color(0xFF2E8B57)}) {
-    return SpinKitThreeBounce(
-      color: color,
-      size: 24,
-    );
-  }
+/// Loading overlay che toàn màn hình (dùng khi gọi API, đăng nhập, v.v.)
+class FullScreenLoader extends StatelessWidget {
+  const FullScreenLoader({super.key});
 
-  // Loading cho button (khi bấm sẽ hiện loading bên trong nút)
-  static Widget button() {
-    return const SizedBox(
-      width: 20,
-      height: 20,
-      child: CircularProgressIndicator(
-        color: Colors.white,
-        strokeWidth: 2.5,
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black54,
+      child: const Center(
+        child: LoadingWidget(useLottie: true, size: 100),
       ),
     );
   }
