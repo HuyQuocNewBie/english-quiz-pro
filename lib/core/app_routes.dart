@@ -39,7 +39,10 @@ class AppRoutes {
 final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.login             : (_) => const LoginScreen(),           // chung Login + Register
   AppRoutes.userHome          : (_) => const HomeScreen(),
-  AppRoutes.quiz              : (_) => const QuizScreen(),
+  AppRoutes.quiz              : (context) {
+    final category = ModalRoute.of(context)!.settings.arguments as String;
+    return QuizScreen(category: category);
+  },
   AppRoutes.result            : (_) => const ResultScreen(),
   AppRoutes.explanation       : (_) => const ExplanationScreen(),
   AppRoutes.history           : (_) => const HistoryScreen(),

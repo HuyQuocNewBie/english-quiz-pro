@@ -55,10 +55,10 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
 
-  cardTheme: CardTheme(
+  cardTheme: CardThemeData(
     elevation: 4,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   ),
 
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(

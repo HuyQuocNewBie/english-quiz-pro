@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'core/theme.dart';
 import 'core/app_routes.dart';
 import 'providers/auth_provider.dart';
+import 'providers/quiz_provider.dart';
+import 'providers/admin_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        // Các provider khác sẽ thêm sau: QuizProvider, AdminProvider...
+        ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

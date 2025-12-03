@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1011434791612",
+    "project_id": "english-quiz-pro",
+    "storage_bucket": "english-quiz-pro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011434791612:android:91112b07476ecebc91a6b9",
+        "android_client_info": {
+          "package_name": "com.example.english_quiz_pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011434791612-7jk08ranlaq5bgr1c62rdtjegtm0anfq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuA2hXu2k7cMPCUc4Q4YF4l_CkgDleX3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011434791612-7jk08ranlaq5bgr1c62rdtjegtm0anfq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
