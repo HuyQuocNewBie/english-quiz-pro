@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'EnglishQuiz Pro',
+        title: 'English Quiz',
         theme: appTheme,
         home: const SplashScreen(),
         routes: appRoutes,
@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
             const SizedBox(height: 40),
             const Text(
-              'EnglishQuiz Pro',
+              'English Quiz',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
