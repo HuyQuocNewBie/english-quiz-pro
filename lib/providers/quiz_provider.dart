@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import '../models/question_model.dart';
 import '../models/quiz_result_model.dart';
-import '../core/constants.dart';
+import '../../providers/auth_provider.dart';
 
 class QuizProvider with ChangeNotifier {
   List<QuestionModel> _questions = [];
@@ -17,19 +19,40 @@ class QuizProvider with ChangeNotifier {
   int get score => _score;
   bool get isLoading => _isLoading;
 
-  Future<void> loadQuestions(String category) async {
+  Future<void> loadQuestions(String category, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
 
     final snapshot = await FirebaseFirestore.instance
         .collection('questions')
         .where('category', isEqualTo: category)
-        .limit(10)
         .get();
 
-    _questions = snapshot.docs
+    var allQuestions = snapshot.docs
         .map((doc) => QuestionModel.fromMap(doc.data(), doc.id))
         .toList();
+
+    final random = Random();
+    allQuestions.shuffle(random);
+
+    // XÀO ĐÁP ÁN TỪNG CÂU
+    for (int i = 0; i < allQuestions.length; i++) {
+      final q = allQuestions[i];
+      final correctAnswer = q.answers[q.correctIndex];
+      final shuffledAnswers = List<String>.from(q.answers)..shuffle(random);
+      final newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
+
+      allQuestions[i] = QuestionModel(
+        id: q.id,
+        question: q.question,
+        answers: shuffledAnswers,
+        correctIndex: newCorrectIndex,
+        explanation: q.explanation,
+        category: q.category,
+      );
+    }
+
+    _questions = allQuestions;
     _userAnswers = List.generate(_questions.length, (index) => -1);
     _currentIndex = 0;
     _score = 0;
@@ -53,7 +76,7 @@ class QuizProvider with ChangeNotifier {
     }
   }
 
-  Future<void> saveResult(String userId, String category) async {
+  Future<void> saveResult(String userId, String category, BuildContext context) async {
     final result = QuizResultModel(
       id: '',
       userId: userId,
@@ -64,12 +87,8 @@ class QuizProvider with ChangeNotifier {
       answers: Map.fromIterables(_questions.map((q) => q.id), _userAnswers),
     );
 
-    // Lưu kết quả quiz
-    await FirebaseFirestore.instance
-        .collection('quiz_results')
-        .add(result.toMap());
+    await FirebaseFirestore.instance.collection('quiz_results').add(result.toMap());
 
-    // Cập nhật highScore
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
     await FirebaseFirestore.instance.runTransaction((txn) async {
       final snap = await txn.get(userRef);
@@ -81,22 +100,21 @@ class QuizProvider with ChangeNotifier {
     if (userDoc.exists) {
       final userData = userDoc.data()!;
       final currentHighScore = userData['highScore'] ?? 0;
-      final categoryHighScores = Map<String, int>.from(
-        userData['categoryHighScores'] ?? {},
-      );
-      final currentCategoryHighScore = categoryHighScores[category] ?? 0;
+      final categoryHighScores = Map<String, int>.from(userData['categoryHighScores'] ?? {});
 
-      // Cập nhật highScore tổng nếu điểm mới cao hơn
       if (_score > currentHighScore) {
         await userRef.update({'highScore': _score});
       }
 
-      // Cập nhật categoryHighScores nếu điểm mới cao hơn
+      final currentCategoryHighScore = categoryHighScores[category] ?? 0;
       if (_score > currentCategoryHighScore) {
         categoryHighScores[category] = _score;
         await userRef.update({'categoryHighScores': categoryHighScores});
       }
     }
+
+    // THÊM DÒNG NÀY – CẬP NHẬT NGAY LẬP TỨC TRÊN UI
+    await Provider.of<AuthProvider>(context, listen: false).refreshUser();
   }
 
   void reset() {

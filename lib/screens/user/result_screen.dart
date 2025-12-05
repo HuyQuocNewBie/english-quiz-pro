@@ -423,7 +423,7 @@ class ResultScreen extends StatelessWidget {
                             ? quizProvider.questions.first.category
                             : 'Quiz';
                         quizProvider.reset();
-                        await quizProvider.loadQuestions(category);
+                        await quizProvider.loadQuestions(category, context);
                         Navigator.popUntil(
                           context,
                           ModalRoute.withName(AppRoutes.quiz),

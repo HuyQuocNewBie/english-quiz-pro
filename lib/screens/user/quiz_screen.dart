@@ -31,7 +31,7 @@ class _QuizScreenState extends State<QuizScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<QuizProvider>(context, listen: false).loadQuestions(widget.category);
+      Provider.of<QuizProvider>(context, listen: false).loadQuestions(widget.category, context);
     });
     // Không start timer ngay, đợi questions load xong
   }
@@ -67,7 +67,7 @@ class _QuizScreenState extends State<QuizScreen> {
   void endQuiz() {
     _timer?.cancel();
     final quiz = Provider.of<QuizProvider>(context, listen: false);
-    quiz.saveResult(Provider.of<AuthProvider>(context, listen: false).user!.uid, widget.category);
+    quiz.saveResult(Provider.of<AuthProvider>(context, listen: false).user!.uid, widget.category, context);
 
     Navigator.pushNamed(
       context,
